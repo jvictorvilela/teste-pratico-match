@@ -1,0 +1,31 @@
+version: '3'
+
+volumes:
+  match-mysql-data:
+    driver: local
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: match-mysql
+    volumes:
+      - match-mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=match
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pass
+
+  # PHP (8.0)
+  app:
+    build: .
+    container_name: match-app
+    volumes:
+      - .:/var/www/html
+      - ~/.ssh:/home/.ssh
+    ports:
+      - "80:80"
+    links:
+      - mysql
